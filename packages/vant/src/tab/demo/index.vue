@@ -6,10 +6,13 @@ import { ref } from 'vue';
 import { useTranslate } from '../../../docs/site';
 import { showToast } from '../../toast';
 import Shrink from './Shrink.vue';
+import Button from '../../button/Button'
+import AsyncTab from './TstTabs/AsyncTab.vue';
 
 const t = useTranslate({
   'zh-CN': {
     tab: '标签 ',
+    title1: '测试动态组件',
     title2: '标签栏滚动',
     title3: '禁用标签',
     title4: '样式风格',
@@ -68,9 +71,29 @@ const beforeChange = (name: number) => {
     resolve(name !== 3);
   });
 };
+const activeTst = ref(0);
+const titles = ref([0, 1, 2]);
+let i = 10;
+const handleAddTab = () => {
+  titles.value.splice(1, 0, ++i);
+};
 </script>
 
 <template>
+  <demo-block :title="t('title1')">
+    <Button @click="handleAddTab">增加</Button>
+    <br />
+    <van-tabs v-model:active="activeTst" :line-space="10">
+      <!-- <damo-tab :title="t('tab') + index" v-for="index in titles" :key="index">
+        {{ t('content') }} {{ index }}
+      </damo-tab> -->
+      <template v-for="index in titles" :key="index">
+        <AsyncTab :item="{ title: t('tab') + index, id: index }">
+          {{ t('content') }} {{ index }}
+        </AsyncTab>
+      </template>
+    </van-tabs>
+  </demo-block>
   <demo-block :title="t('basicUsage')">
     <van-tabs v-model:active="active1">
       <van-tab :title="t('tab') + index" v-for="index in tabs" :key="index">
